@@ -1,15 +1,18 @@
+import os
 from datetime import datetime
 from datetime import timezone
 from typing import Optional
 from uuid import UUID
 from uuid import uuid4
 
-from logan.runlog.conn import engine
-from logan.runlog.queries import get_task
-from logan.runlog.tables import TaskTable
 from sqlalchemy import insert
 from sqlalchemy import update
 from sqlalchemy.orm import Session
+
+from logan.runlog.conn import FILE_URL
+from logan.runlog.conn import engine
+from logan.runlog.queries import get_task
+from logan.runlog.tables import TaskTable
 
 
 def set_task_log(
@@ -50,3 +53,10 @@ def set_task_log(
     with Session(engine()) as db:
         db.execute(stmt)
         db.commit()
+
+
+def clear_database():
+    try:
+        os.unlink(FILE_URL)
+    except FileNotFoundError:
+        pass

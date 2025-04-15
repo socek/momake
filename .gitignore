@@ -5,3 +5,5 @@ node_modules
 .coverage
 */__pycache__/*
 logan.db
+logantasks
+logantasks.py

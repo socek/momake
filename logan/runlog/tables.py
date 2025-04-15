@@ -1,8 +1,9 @@
-from logan.runlog.db import SqlTable
 from sqlalchemy import UUID
 from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy import String
+
+from logan.runlog.db import SqlTable
 
 
 class TaskTable(SqlTable):
