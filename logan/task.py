@@ -1,49 +1,46 @@
 from datetime import datetime
 from datetime import timezone
+from typing import Optional
+from uuid import UUID
+from uuid import uuid4
+
+from logan.runlog.commands import set_task_log
+from logan.runlog.queries import get_last_task_run
 
 
 class Task:
     name = None
     dependecies = []
 
-    def __init__(self):
-        self.runlog = {}
-        self.last_runlog = None
+    @property
+    def task_id(self):
+        return self.__class__.__name__
 
-    def feed_last_runlog(self, last_runlog: dict):
-        self.last_runlog = last_runlog
+    def should_run(self, last_runtime: Optional[datetime], run_id: UUID) -> bool:
+        return self.run(run_id)
 
-    def get_last_runtime(self):
-        if "runtime" in self.last_runlog:
-            return datetime.fromisoformat(self.last_runlog["runtime"])
-
-    def should_run(self):
-        last_runtime = self.get_last_runtime()
+    def should_run_task(self, run_id: UUID):
+        last_runtime = get_last_task_run(self.task_id)
         for dependency in self.dependecies:
-            if dependency.should_run(last_runtime):
+            if dependency.should_run(last_runtime, run_id):
                 return True
         return False
 
     def action(self):
         pass
 
-    def run(self):
+    def run(self, run_id: Optional[UUID] = None):
+        run_id = run_id or uuid4()
         print(f"Checking {self.name}...")
-        self.runlog["check_runtime"] = datetime.now(timezone.utc)
-        if self.should_run():
-            self.runlog["runtime"] = datetime.now(timezone.utc)
+        runlog = {}
+        runlog["check_runtime"] = datetime.now(timezone.utc)
+        if self.should_run_task(run_id):
+            runlog["runtime"] = datetime.now(timezone.utc)
             print(f"Running {self.name}...")
             self.action()
-            self.runlog["runtime_finish"] = datetime.now(timezone.utc)
-            return True
+            runlog["runtime_finish"] = datetime.now(timezone.utc)
+            result = True
         else:
-            return False
-
-    def collect_runlog(self):
-        runlog = {
-            "check_runtime": self.runlog["check_runtime"].isoformat(),
-        }
-        if self.runlog.get("runtime"):
-            runlog["runtime"] = self.runlog["runtime"].isoformat()
-            runlog["runtime_finish"] = self.runlog["runtime_finish"].isoformat()
-        return runlog
+            result = False
+        set_task_log(self.task_id, run_id, **runlog)
+        return result

@@ -1,19 +1,19 @@
 from datetime import datetime
 from datetime import timezone
+from functools import cache
 from pathlib import Path
 from typing import Optional
-
-from logan.task import Task
+from uuid import UUID
 
 
 class Dependency:
-    def has_changed(self) -> bool:
-        pass
+    def has_changed(self, last_runtime: datetime, run_id: UUID) -> bool:
+        return True
 
-    def should_run(self, last_runtime: datetime):
+    def should_run(self, last_runtime: Optional[datetime], run_id: UUID) -> bool:
         if not last_runtime:
             return True
-        return self.has_changed(last_runtime)
+        return self.has_changed(last_runtime, run_id)
 
 
 class FileDependency(Dependency):
@@ -22,19 +22,14 @@ class FileDependency(Dependency):
         self.path = path
         self.pattern = pattern
 
-    def has_changed(self, last_runtime: datetime) -> bool:
+    @cache
+    def file_mtimes(self) -> list[datetime]:
+        mtimes = []
         pathobj = Path(self.path)
         for path in pathobj.rglob(self.pattern):
             modified = datetime.fromtimestamp(path.lstat().st_mtime, tz=timezone.utc)
-            if modified > last_runtime:
-                return True
-        return False
+            mtimes.append(modified)
+        return mtimes
 
-
-class TaskDependency(Dependency):
-    def __init__(self, task: Task):
-        super().__init__()
-        self.task = task
-
-    def has_changed(self, last_runtime: datetime) -> bool:
-        return self.task.run()
+    def has_changed(self, last_runtime: datetime, run_id: UUID) -> bool:
+        return min(self.file_mtimes()) > last_runtime

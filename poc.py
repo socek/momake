@@ -1,6 +1,4 @@
 from logan.dependency import FileDependency
-from logan.dependency import TaskDependency
-from logan.runner import Runner
 from logan.task import Task
 
 
@@ -22,7 +20,7 @@ class Lint(Task):
     name = "lint"
 
     dependecies = [
-        TaskDependency(readme),
+        readme,
         FileDependency("logan", "*.py"),
     ]
 
@@ -30,7 +28,4 @@ class Lint(Task):
         print("lint task")
 
 
-runner = Runner()
-runner.add_task(Lint())
-runner.add_task(readme)
-runner.run("lint")
+Lint().run()
