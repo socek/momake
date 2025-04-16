@@ -9,10 +9,10 @@ from sqlalchemy import insert
 from sqlalchemy import update
 from sqlalchemy.orm import Session
 
-from logan.runlog.conn import FILE_URL
-from logan.runlog.conn import engine
-from logan.runlog.queries import get_task
-from logan.runlog.tables import TaskTable
+from momake.runlog.conn import FILE_URL
+from momake.runlog.conn import engine
+from momake.runlog.queries import get_task
+from momake.runlog.tables import TaskTable
 
 
 def set_task_log(

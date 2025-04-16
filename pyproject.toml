@@ -1,5 +1,5 @@
 [project]
-name = "logan"
+name = "momake"
 version = "0.1.0"
 description = ""
 authors = [
@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [project.scripts]
-logan = "logan.runner:cmd"
+momake = "momake.runner:cmd"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -21,7 +21,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.isort]
 line_length = 99
-known_first_party = [ "logan" ]
+known_first_party = [ "momake" ]
 multi_line_output = 3
 sections = [ "FUTURE", "STDLIB", "OTHER", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 force_single_line = true

@@ -1,4 +1,4 @@
-# Logan
+# Modern Make
 
 Proof of concept for a python make
 
@@ -6,16 +6,16 @@ Proof of concept for a python make
 
 ```
 $ poetry install
-$ poetry run logan
+$ poetry run momake
 ```
 
-All tasks needs to be in `logantasks.py` or `logantasks` module.
+All tasks needs to be in `momaketasks.py` or `momaketasks` module.
 
 Example:
 
 ```
-from logan.dependency import FileDependency
-from logan.task import Task
+from momake.dependency import FileDependency
+from momake.task import Task
 
 
 class Readme(Task):
@@ -37,7 +37,7 @@ class Lint(Task):
 
     dependecies = [
         readme,
-        FileDependency("logan", "*.py"),
+        FileDependency("momake", "*.py"),
     ]
 
     def action(self):

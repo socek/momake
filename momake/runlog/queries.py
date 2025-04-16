@@ -6,8 +6,8 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from logan.runlog.conn import engine
-from logan.runlog.tables import TaskTable
+from momake.runlog.conn import engine
+from momake.runlog.tables import TaskTable
 
 
 def get_last_task_run(task_id) -> Optional[datetime]:

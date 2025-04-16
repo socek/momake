@@ -4,8 +4,8 @@ from typing import Optional
 from uuid import UUID
 from uuid import uuid4
 
-from logan.runlog.commands import set_task_log
-from logan.runlog.queries import get_last_task_run
+from momake.runlog.commands import set_task_log
+from momake.runlog.queries import get_last_task_run
 
 
 class Task:

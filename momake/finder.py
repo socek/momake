@@ -3,7 +3,7 @@ from inspect import getmodule
 from logging import getLogger
 from pkgutil import walk_packages
 
-from logan.task import Task
+from momake.task import Task
 
 logger = getLogger(__name__)
 
@@ -13,7 +13,7 @@ def is_defined_in(element, module):
 
 
 class TaskFinder:
-    modules = ["logantasks"]
+    modules = ["momaketasks"]
 
     def find(self):
         elements = []

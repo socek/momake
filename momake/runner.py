@@ -7,9 +7,9 @@ from click import echo
 from click import get_current_context
 from click import option
 
-from logan.finder import TaskFinder
-from logan.runlog.commands import clear_database
-from logan.task import Task
+from momake.finder import TaskFinder
+from momake.runlog.commands import clear_database
+from momake.task import Task
 
 
 class Runner:
@@ -42,6 +42,7 @@ def cmd(name: str, list_tasks: bool, clear: bool, debug: bool):
         clear_database()
         echo("Database deleted...")
         return
+
     runner = Runner()
     for taskcls in TaskFinder().find():
         task = taskcls()

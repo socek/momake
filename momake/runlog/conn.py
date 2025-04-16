@@ -2,10 +2,10 @@ from functools import cache
 
 from sqlalchemy import create_engine
 
-import logan.runlog.tables
-from logan.runlog.db import metadata
+import momake.runlog.tables
+from momake.runlog.db import metadata
 
-FILE_URL = "logan.db"
+FILE_URL = "momake.db"
 URL = f"sqlite:///{FILE_URL}"
 
 

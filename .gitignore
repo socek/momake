@@ -4,6 +4,6 @@ pyrightconfig.json
 node_modules
 .coverage
 */__pycache__/*
-logan.db
-logantasks
-logantasks.py
+momake.db
+momaketasks
+momaketasks.py

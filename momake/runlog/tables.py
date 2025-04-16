@@ -3,7 +3,7 @@ from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy import String
 
-from logan.runlog.db import SqlTable
+from momake.runlog.db import SqlTable
 
 
 class TaskTable(SqlTable):
