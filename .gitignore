@@ -7,3 +7,4 @@ node_modules
 momake.db
 momaketasks
 momaketasks.py
+dist

@@ -1,3 +1,5 @@
+import os
+import sys
 from logging import DEBUG
 from logging import basicConfig
 
@@ -6,7 +8,9 @@ from click import command
 from click import echo
 from click import get_current_context
 from click import option
+from click import style
 
+from momake.exceptions import TaskFailed
 from momake.finder import TaskFinder
 from momake.runlog.commands import clear_database
 from momake.task import Task
@@ -21,7 +25,12 @@ class Runner:
         self.tasks[task.name] = task
 
     def run(self, taskname: str):
-        self.tasks[taskname].run()
+        try:
+            self.tasks[taskname].run()
+        except TaskFailed as er:
+            ctx = get_current_context()
+            echo(style(f"Task filed: {er.args[0]}", fg="red"))
+            ctx.exit(1)
 
     def list_tasks(self):
         echo("Avalible tasks:")
@@ -35,6 +44,7 @@ class Runner:
 @option("-c", "--clear", default=False, is_flag=True, help="clear database")
 @option("-d", "--debug", default=False, is_flag=True, help="show debug logs")
 def cmd(name: str, list_tasks: bool, clear: bool, debug: bool):
+    sys.path.append(os.getcwd())
     if debug:
         basicConfig(level=DEBUG, format="%(message)s")
 
@@ -54,7 +64,7 @@ def cmd(name: str, list_tasks: bool, clear: bool, debug: bool):
 
     if name:
         runner.run(name)
-        return
+        return 1
 
     ctx = get_current_context()
     echo(ctx.get_help())

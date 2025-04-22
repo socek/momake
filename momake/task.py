@@ -4,6 +4,9 @@ from typing import Optional
 from uuid import UUID
 from uuid import uuid4
 
+from click import echo
+from click import style
+
 from momake.runlog.commands import set_task_log
 from momake.runlog.queries import get_last_task_run
 
@@ -31,12 +34,12 @@ class Task:
 
     def run(self, run_id: Optional[UUID] = None):
         run_id = run_id or uuid4()
-        print(f"Checking {self.name}...")
+        echo(style(f"Checking {self.name}...", fg="bright_yellow"))
         runlog = {}
         runlog["check_runtime"] = datetime.now(timezone.utc)
         if self.should_run_task(run_id):
             runlog["runtime"] = datetime.now(timezone.utc)
-            print(f"Running {self.name}...")
+            echo(style(f"Running {self.name}...", fg="green"))
             self.action()
             runlog["runtime_finish"] = datetime.now(timezone.utc)
             result = True
