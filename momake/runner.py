@@ -1,7 +1,8 @@
-import os
-import sys
 from logging import DEBUG
+from logging import Handler
 from logging import basicConfig
+from os import getcwd
+from sys import path
 
 from click import argument
 from click import command
@@ -38,15 +39,33 @@ class Runner:
             echo(f"- {task.name}")
 
 
+class SpecialHandler(Handler):
+    fg = {
+        "DEBUG": "blue",
+        "INFO": "white",
+        "WARNING": "yellow",
+        "ERROR": "red",
+    }
+
+    def emit(self, record):
+        fg = self.fg[record.levelname]
+        echo(style(record.getMessage(), fg=fg))
+
+def debug_on(ctx, param, value) -> bool:
+    if not value:
+        return False
+    handler = SpecialHandler()
+    basicConfig(level=DEBUG, format="%(message)s", handlers=[handler])
+    return True
+
+
 @command()
 @argument("name", required=False, default=None)
 @option("-l", "--list-tasks", default=False, is_flag=True, help="number of greetings")
 @option("-c", "--clear", default=False, is_flag=True, help="clear database")
-@option("-d", "--debug", default=False, is_flag=True, help="show debug logs")
+@option("-d", "--debug", default=False, is_flag=True, help="show debug logs", callback=debug_on)
 def cmd(name: str, list_tasks: bool, clear: bool, debug: bool):
-    sys.path.append(os.getcwd())
-    if debug:
-        basicConfig(level=DEBUG, format="%(message)s")
+    path.append(getcwd())
 
     if clear:
         clear_database()
@@ -64,7 +83,7 @@ def cmd(name: str, list_tasks: bool, clear: bool, debug: bool):
 
     if name:
         runner.run(name)
-        return 1
+        return
 
     ctx = get_current_context()
     echo(ctx.get_help())

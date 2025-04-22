@@ -1,5 +1,6 @@
 from datetime import datetime
 from datetime import timezone
+from logging import getLogger
 from typing import Optional
 from uuid import UUID
 from uuid import uuid4
@@ -9,6 +10,8 @@ from click import style
 
 from momake.runlog.commands import set_task_log
 from momake.runlog.queries import get_last_task_run
+
+log = getLogger(__name__)
 
 
 class Task:
@@ -34,7 +37,7 @@ class Task:
 
     def run(self, run_id: Optional[UUID] = None):
         run_id = run_id or uuid4()
-        echo(style(f"Checking {self.name}...", fg="bright_yellow"))
+        log.info("Checking %s...", self.name)
         runlog = {}
         runlog["check_runtime"] = datetime.now(timezone.utc)
         if self.should_run_task(run_id):
