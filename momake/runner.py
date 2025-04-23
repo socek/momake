@@ -2,6 +2,7 @@ from logging import DEBUG
 from logging import Handler
 from logging import basicConfig
 from os import getcwd
+from pathlib import Path
 from sys import path
 
 from click import argument
@@ -58,6 +59,15 @@ def debug_on(ctx, param, value) -> bool:
     basicConfig(level=DEBUG, format="%(message)s", handlers=[handler])
     return True
 
+def search_task_path():
+    selfpath = Path(getcwd())
+    root = Path("/")
+    while selfpath != root:
+        dirname = selfpath / "momaketasks" / "__init__.py"
+        filename = selfpath / "momaketasks.py"
+        if dirname.exists or filename.exists:
+            path.append(str(selfpath))
+        selfpath = selfpath.parent
 
 @command()
 @argument("name", required=False, default=None)
@@ -65,7 +75,7 @@ def debug_on(ctx, param, value) -> bool:
 @option("-c", "--clear", default=False, is_flag=True, help="clear database")
 @option("-d", "--debug", default=False, is_flag=True, help="show debug logs", callback=debug_on)
 def cmd(name: str, list_tasks: bool, clear: bool, debug: bool):
-    path.append(getcwd())
+    search_task_path()
 
     if clear:
         clear_database()
